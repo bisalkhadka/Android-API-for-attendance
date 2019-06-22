@@ -9,8 +9,8 @@ const app = express();
  
 app.use(cors());
 
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+ app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json()); 
 
 
 
@@ -32,7 +32,7 @@ app.post('/registration', (req, res) => {
 
     mydata.save().then(function () {
         //alert(Success)
-        res.send('Login Successful');
+        res.send('User successfully registered');
  }).catch(function (e) {
       res.send(e);
     
@@ -58,7 +58,7 @@ app.get('/users', function (req, res) {
 
 app.post("/login10", async function(req, res){
 
-    const user = await User.checkCrediantialsDb(req.body.username,req.body.password)
+    const user = await User.checkCrediantialsDb(req.body.Username,req.body.Password)
   // console.log(user)
     const token = await user.generateAuthToken()
     res.send({token})
@@ -83,18 +83,10 @@ app.post('/users/logout', auth, async (req, res) => {
     res.status(500).send()
     }
    })
-   app.post('/users/logoutAll', auth, async (req, res) => {
-    try {
-    req.user.tokens = []
-    await req.user.save()
-    res.send()
-    } catch (e) {
-    res.status(500).send()
-    }
-   }) 
+  
 
 
-   app.put('/updateprofile',auth, function (req, res) {   //update producte
+   app.put('/profileupdate',auth, function (req, res) {   //update product
     console.log(req.body);
     User.findByIdAndUpdate(req.user._id, req.body, { new: true }, (err, user) => {
       res.send("succesfull");
