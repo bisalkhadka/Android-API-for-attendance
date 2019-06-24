@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken')
 const userSchema = new mongoose.Schema({
 
+    fileToUpload: { // column name
+        type: String   //data type String
+    },
+
         Firstname: { // column name
             type: String   //data type String
         },
@@ -26,6 +30,9 @@ const userSchema = new mongoose.Schema({
         Confpassword: {  // column name
             type: String  //data type Number
         },
+        usertype:{
+            type: String
+        },
         tokens:[{token: {type:String}}]
        
     })
@@ -33,7 +40,7 @@ const userSchema = new mongoose.Schema({
    
         userSchema.statics.checkCrediantialsDb = async (user22, pass) =>{
 
-            const user1 = await user.findOne({username : user22, password : pass})
+            const user1 = await user.findOne({Username : user22, Password : pass})
              return user1;
     }
 
@@ -41,7 +48,7 @@ const userSchema = new mongoose.Schema({
                 const user = this
                const token = jwt.sign({ _id: user._id.toString() }, 'thisismynewcourse')
                
-               console.log(token);
+               //console.log(token);
                 user.tokens = user.tokens.concat({ token :token })
                 await user.save()
                 return token
