@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 
 
 const User = require('./model/User');
+const Student = require('./model/Student');
 
 
 
@@ -70,6 +71,15 @@ app.get('/users', function (req, res) {
 
 });
 
+app.get('/students', function (req, res) {
+    User.find().then(function (user) {
+        res.send(user);
+    }).catch(function (e) {
+        res.send(e)
+    });
+
+});
+
 
 app.post("/login10", async function(req, res){
 
@@ -110,6 +120,15 @@ app.post('/users/logout', auth, async (req, res) => {
     }
 });
 
+var storage = multer.diskStorage({
+    destination: 'Student',
+    filename: (req, file, callback) => {
+        let ext = path.extname(file.originalname);
+        callback(null, 'Student' + Date.now() + ext);
+    }
+});
+
+
 var imageFileFilter = (req, file, cb) => {
     if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
         return cb(new Error('You can upload only image files!'), false);
@@ -129,6 +148,40 @@ var upload = multer({
         // res.statusCode = 200;
         // res.setHeader('Content-Type', 'application/json');
         // res.json(req.file);
+    });
+
+    app.post('/stdimage', upload.single('imageFile'), (req, res) => {
+        res.send(req.file)
+         // res.statusCode = 200;
+         // res.setHeader('Content-Type', 'application/json');
+         // res.json(req.file);
+     });
+
+
+
+     app.post('/add', (req, res) => {
+        console.log(req.body);
+        data={
+            'stdimage': req.body.stdimage,
+            'name': req.body.name,
+            'age': req.body.age,
+            'address': req.body.address,
+            'fname': req.body.fname,
+            'mname':req.body.mname,
+            'class': req.body.class,
+            'rnumber': req.body.rnumber,
+            'modname': req.body.modname,
+        }
+        var mydata = new Student(data);
+    
+        mydata.save().then(function (data) {
+            //alert(Success)
+            res.send(data);
+     }).catch(function (e) {
+          res.send(e);
+        
+    
+        });
     });
 
   
