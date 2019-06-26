@@ -10,7 +10,9 @@ const path = require('path');
 const app = express();
  
 app.use(cors());
-app.use('/images',express.static('./profile'))
+// app.use('/images',express.static('./profile'))
+
+app.use(express.static(path.join(__dirname,'Student')));
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json()); 
@@ -19,6 +21,7 @@ app.use(bodyParser.json());
 
 const User = require('./model/User');
 const Student = require('./model/Student');
+const Notes = require('./model/Notes');
 
 
 
@@ -72,8 +75,23 @@ app.get('/users', function (req, res) {
 });
 
 app.get('/students', function (req, res) {
-    User.find().then(function (user) {
-        res.send(user);
+    Student.find().then(function (student) {
+
+        res.send(student);
+    }).catch(function (e) {
+        res.send(e)
+    });
+
+});
+
+//==============================================//=============================================
+
+// To get notes //
+
+app.get('/notes', function (req, res) {
+    Notes.find().then(function (notes) {
+
+        res.send(notes);
     }).catch(function (e) {
         res.send(e)
     });
@@ -81,10 +99,48 @@ app.get('/students', function (req, res) {
 });
 
 
+//--------------------==================================================================--------------//
+
+// get one student //
+
+
+app.get('/students/:id', function (req, res) {
+    uid=req.params.id.toString();
+    Student.findById(uid).then(function (student) {
+
+        res.send(student);
+    }).catch(function (e) {
+        res.send(e)
+    });
+
+});
+
+//---------------------------======================================---------------------------------------//
+
+
+// get one note //
+
+
+app.get('/notes/:id', function (req, res) {
+    uid=req.params.id.toString();
+    Notes.findById(uid).then(function (notes) {
+
+        res.send(notes);
+    }).catch(function (e) {
+        res.send(e)
+    });
+
+});
+
+
+//==================================================//===========================================================
+
+
+// For login System //
+
 app.post("/login10", async function(req, res){
 
     const user = await User.checkCrediantialsDb(req.body.Username,req.body.Password)
-  // console.log(user)
     const token = await user.generateAuthToken()
     console.log(token)
     res.send({token:token,
@@ -92,11 +148,19 @@ app.post("/login10", async function(req, res){
    })
 
 
+   //==========================================//==========================================================//
+   
+
+
    //dashboard tokens client file
    app.get('/user/me',auth,function(req,res)
    {  
        res.send(req.user);
    })
+
+   //=================================================//==========================================
+
+   //For logout //
 
 app.post('/users/logout', auth, async (req, res) => {
     try {
@@ -111,8 +175,10 @@ app.post('/users/logout', auth, async (req, res) => {
     }
    })
 
+//=====================================Image upload and retrieve =============================================//
+  
 
-   var storage = multer.diskStorage({
+var storage = multer.diskStorage({
     destination: 'profile',
     filename: (req, file, callback) => {
         let ext = path.extname(file.originalname);
@@ -130,7 +196,7 @@ var storage = multer.diskStorage({
 
 
 var imageFileFilter = (req, file, cb) => {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!file.originalname.match(/\.(jpg|JPG|jpeg|png|gif)$/)) {
         return cb(new Error('You can upload only image files!'), false);
     }
     cb(null, true);
@@ -157,23 +223,11 @@ var upload = multer({
          // res.json(req.file);
      });
 
-
+ //=--------=============================  To add user //================================================//
 
      app.post('/add', (req, res) => {
         console.log(req.body);
-        data={
-            'stdimage': req.body.stdimage,
-            'name': req.body.name,
-            'age': req.body.age,
-            'address': req.body.address,
-            'fname': req.body.fname,
-            'mname':req.body.mname,
-            'class': req.body.class,
-            'rnumber': req.body.rnumber,
-            'modname': req.body.modname,
-        }
-        var mydata = new Student(data);
-    
+        var mydata = new Student(req.body);
         mydata.save().then(function (data) {
             //alert(Success)
             res.send(data);
@@ -184,8 +238,29 @@ var upload = multer({
         });
     });
 
-  
 
+    // -------------------------------//---------------------------------------------------// 
+
+//===================================To add note ==============================================//
+
+
+    app.post('/noteadd', (req, res) => {
+        console.log(req.body);
+        var mydata = new Notes(req.body);
+        mydata.save().then(function (data) {
+            //alert(Success)
+            res.send(data);
+     }).catch(function (e) {
+          res.send(e);
+        
+    
+        });
+    });
+
+   
+//--------------------------------------------------//------------------------------------------------------
+ 
+// To update Profile //
 
    app.put('/profileupdate',auth, function (req, res) {   //update product
     console.log(req.body);
@@ -194,6 +269,30 @@ var upload = multer({
     });
   });
 
+  //================================================//========================================================
+
+  // To delete student by id //
+
+  app.delete('/stddelete/:id',function(req,res){
+    uid=req.params.id.toString();
+    Student.findByIdAndDelete(uid).then(function(){
+        res.send({message:"success"})
+    })
+  })
+
+
+  //====================================================//============================================================
+
+   // To delete note by id //
+
+   app.delete('/notedelete/:id',function(req,res){
+    uid=req.params.id.toString();
+    Notes.findByIdAndDelete(uid).then(function(){
+        res.send({message:"success"})
+    })
+  })
+
+  //================================================//===================================================================
 
 
 

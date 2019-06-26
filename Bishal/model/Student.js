@@ -21,15 +21,16 @@ const StudentSchema = new mongoose.Schema({
         mname: {  // column name
             type: String  //data type Number
         },
-        rclass: {  // column name
-            type: Number  //data type Number
-        },
         rnumber: {  // column name
             type: Number  //data type Number
         },
         modname: {  // column name
             type: String  //data type Number
+        },
+        mod: {  // column name
+            type: String  //data type Number
         }
+        
        
        
     })
