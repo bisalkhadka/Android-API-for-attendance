@@ -22,6 +22,7 @@ app.use(bodyParser.json());
 const User = require('./model/User');
 const Student = require('./model/Student');
 const Notes = require('./model/Notes');
+const Attendance = require('./model/Attendance');
 
 
 
@@ -124,7 +125,7 @@ app.get('/students/:id', function (req, res) {
 app.get('/notes/:id', function (req, res) {
     uid=req.params.id.toString();
     Notes.findById(uid).then(function (notes) {
-
+        
         res.send(notes);
     }).catch(function (e) {
         res.send(e)
@@ -223,7 +224,7 @@ var upload = multer({
          // res.json(req.file);
      });
 
- //=--------=============================  To add user //================================================//
+ //=--------=============================  To add Student //================================================//
 
      app.post('/add', (req, res) => {
         console.log(req.body);
@@ -293,6 +294,22 @@ var upload = multer({
   })
 
   //================================================//===================================================================
+
+// To Save attendance 
+
+
+app.post('/addattendance', (req, res) => {
+    console.log(req.body);
+    var mydata = new Attendance(req.body);
+    mydata.save().then(function (data) {
+        //alert(Success)
+        res.send(data);
+ }).catch(function (e) {
+      res.send(e);
+    
+
+    });
+});
 
 
 
