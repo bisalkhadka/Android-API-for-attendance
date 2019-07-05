@@ -312,6 +312,13 @@ app.post('/addattendance', (req, res) => {
     
 });
 
+app.put('/updatestudent', function (req, res) {   //update product
+    console.log(req.body);
+    Student.findByIdAndUpdate(req.student, req.body, { new: true }, (err, student) => {
+      res.send("Profile Updated succesfully");
+    });
+  });
+
 
 app.get('/onestudents/:id', function (req, res) {
    
@@ -324,7 +331,8 @@ app.get('/onestudents/:id', function (req, res) {
                 return{
                     name:stud.name,
                     stdimage:stud.stdimage,
-                    rnumber:stud.rnumber
+                    rnumber:stud.rnumber,
+                    rclass:stud.rclass
 
                 }
             })
@@ -337,14 +345,79 @@ app.get('/onestudents/:id', function (req, res) {
 
 
 app.get('/detailstudents/:id', function (req, res) {
-   
     uid=req.params.id.toString();
- 
     Student.find({rclass:uid}).then(function (student) {
         console.log(student)
-        
         res.send(student)
-        
+    }).catch(function (e) {                        
+        res.send(e)
+    });
+});
+
+
+// app.get('/reportdetails', function (req, res) {
+//     Attendance.find().then(function (attendance) {
+
+//         res.send(attendance);
+//     }).catch(function (e) {
+//         res.send(e)
+//     });
+
+// });
+
+
+app.get('/onestudents/:id', function (req, res) {
+    uid=req.params.id.toString();
+    Student.find({rclass:uid}).then(function (student) {
+        console.log(student)
+        res.json({
+            studt:student.map(stud=>{
+                return{
+                    name:stud.name,
+                    stdimage:stud.stdimage,
+                    rnumber:stud.rnumber,
+                    rclass:stud.rclass
+                }
+            })
+        });
+    }).catch(function (e) {                        
+        res.send(e)
+    });
+});
+
+
+
+app.get('/reportdetails/:id', function (req, res) {
+    uid=req.params.id.toString();
+    Attendance.find({rclass:uid}).then(function (attendance) {
+        console.log(attendance)
+        res.json({
+            attd:attendance.map(attd=>{
+                return{
+                    date:attd.date  
+                }
+            })
+        });
+    }).catch(function (e) {                        
+        res.send(e)
+    });
+});
+
+app.get('/attendancedetails/:id', function (req, res) {
+    uid=req.params.id.toString();
+    Attendance.find({date:uid}).then(function (attendance) {
+        console.log(attendance)
+        res.json({
+            atd:attendance.map(atd=>{
+                return{
+                    rnumber:atd.rnumber,
+                    stdimage:atd.stdimage,  
+                    name:atd.name,  
+                    present:atd.present,  
+                    absent:atd.absent  
+                }
+            })
+        });
     }).catch(function (e) {                        
         res.send(e)
     });

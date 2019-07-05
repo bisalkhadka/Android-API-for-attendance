@@ -13,6 +13,10 @@ const AttendanceSchema = new mongoose.Schema({
         stdimage: { // column name
             type: String   //data type String
         },
+        
+        rclass: { // column name
+            type: String   //data type String
+        },
 
         name: { // column name
             type: String   //data type String
