@@ -13,6 +13,7 @@ app.use(cors());
 // app.use('/images',express.static('./profile'))
 
 app.use(express.static(path.join(__dirname,'Student')));
+app.use(express.static(path.join(__dirname,'profile')));
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json()); 
@@ -34,6 +35,7 @@ app.get("/test11", middleware, function(req, res){
     })
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
 app.post('/registration', (req, res) => {
     console.log(req.body);
     data={
@@ -43,7 +45,7 @@ app.post('/registration', (req, res) => {
         'Email': req.body.Email,
         'Username': req.body.Username,
         'Address':req.body.Address,
-        'Modulename': req.body.Modulename,
+        'Module': req.body.Module,
         'Password': req.body.Password,
         'Confpassword': req.body.Confpassword,
         'usertype':"user"
@@ -197,7 +199,7 @@ var storage = multer.diskStorage({
 
 
 var imageFileFilter = (req, file, cb) => {
-    if (!file.originalname.match(/\.(jpg|JPG|jpeg|png|gif)$/)) {
+    if (!file.originalname.match(/\.(jpg|JPG|jpeg|PNG|png|gif)$/)) {
         return cb(new Error('You can upload only image files!'), false);
     }
     cb(null, true);
@@ -299,17 +301,56 @@ var upload = multer({
 
 
 app.post('/addattendance', (req, res) => {
-    console.log(req.body);
-    var mydata = new Attendance(req.body);
-    mydata.save().then(function (data) {
-        //alert(Success)
-        res.send(data);
- }).catch(function (e) {
-      res.send(e);
+    //console.log(req.body);
+    var data=req.body.stringOfArray;
+    data.forEach(element => {
+        console.log(element)
+        var myData = new Attendance(element);
+        myData.save();
+    });
+    res.json("success")
     
+});
 
+
+app.get('/onestudents/:id', function (req, res) {
+   
+    uid=req.params.id.toString();
+ 
+    Student.find({rclass:uid}).then(function (student) {
+        console.log(student)
+        res.json({
+            studt:student.map(stud=>{
+                return{
+                    name:stud.name,
+                    stdimage:stud.stdimage,
+                    rnumber:stud.rnumber
+
+                }
+            })
+        });
+    }).catch(function (e) {                        
+        res.send(e)
+    });
+
+});
+
+
+app.get('/detailstudents/:id', function (req, res) {
+   
+    uid=req.params.id.toString();
+ 
+    Student.find({rclass:uid}).then(function (student) {
+        console.log(student)
+        
+        res.send(student)
+        
+    }).catch(function (e) {                        
+        res.send(e)
     });
 });
+
+
 
 
 

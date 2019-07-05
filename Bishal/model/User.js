@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
         Address: {  // column name
             type: String  //data type Number
         },
-        Modulename: {  // column name
+        Module: {  // column name
             type: String  //data type Number
         },
         Password: {  // column name
