@@ -77,6 +77,25 @@ app.get('/users', function (req, res) {
 
 });
 
+
+app.get('/users/:id', function (req, res) {
+    uid=req.params.id.toString();
+    User.findById(uid).then(function (user) {
+        
+        res.send(user);
+    }).catch(function (e) {
+        res.send(e)
+    });
+
+});
+
+app.delete('/userdelete/:id',function(req,res){
+    uid=req.params.id.toString();
+    User.findByIdAndDelete(uid).then(function(){
+        res.send({message:"success"})
+    })
+  })
+
 app.get('/students', function (req, res) {
     Student.find().then(function (student) {
 
@@ -297,6 +316,17 @@ var upload = multer({
 
   //================================================//===================================================================
 
+
+  app.put('/updatenote', function (req, res) {   //update note
+    console.log(req.body);
+    Notes.findByIdAndUpdate(req.notes, req.body, { new: true }, (err, notes) => {
+      res.send("Note Updated succesfully");
+    });
+  });
+
+
+//=====================================//==============================//============================================//
+
 // To Save attendance 
 
 
@@ -312,7 +342,7 @@ app.post('/addattendance', (req, res) => {
     
 });
 
-app.put('/updatestudent', function (req, res) {   //update product
+app.put('/updatestudent', function (req, res) {   //update student
     console.log(req.body);
     Student.findByIdAndUpdate(req.student, req.body, { new: true }, (err, student) => {
       res.send("Profile Updated succesfully");
