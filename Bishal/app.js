@@ -24,6 +24,8 @@ const User = require('./model/User');
 const Student = require('./model/Student');
 const Notes = require('./model/Notes');
 const Attendance = require('./model/Attendance');
+const Contact = require('./model/Contact');
+
 
 
 
@@ -77,17 +79,44 @@ app.get('/users', function (req, res) {
 
 });
 
-
 app.get('/users/:id', function (req, res) {
     uid=req.params.id.toString();
     User.findById(uid).then(function (user) {
-        
         res.send(user);
     }).catch(function (e) {
         res.send(e)
     });
 
 });
+
+app.get('/contacts', function (req, res) {
+    Contact.find().then(function (contact) {
+        res.send(contact);
+    }).catch(function (e) {
+        res.send(e)
+    });
+
+});
+
+app.get('/contacts/:id', function (req, res) {
+    uid=req.params.id.toString();
+    Contact.findById(uid).then(function (contact) {
+        res.send(contact);
+    }).catch(function (e) {
+        res.send(e)
+    });
+
+});
+
+app.delete('/contactdelete/:id',function(req,res){
+    uid=req.params.id.toString();
+    Contact.findByIdAndDelete(uid).then(function(){
+        res.send({message:"success"})
+    })
+  })
+
+
+
 
 app.delete('/userdelete/:id',function(req,res){
     uid=req.params.id.toString();
@@ -281,6 +310,23 @@ var upload = multer({
 
    
 //--------------------------------------------------//------------------------------------------------------
+
+// To add contact page //
+
+app.post('/contact', (req, res) => {
+    console.log(req.body);
+    var mydata = new Contact(req.body);
+    mydata.save().then(function (data) {
+        //alert(Success)
+        res.send(data);
+ }).catch(function (e) {
+      res.send(e);
+    
+
+    });
+});
+
+//===================================//===================================//========================================//
  
 // To update Profile //
 
