@@ -333,7 +333,7 @@ app.post('/contact', (req, res) => {
 
    app.put('/profileupdate',auth, function (req, res) {   //update product
     console.log(req.body);
-    User.findByIdAndUpdate(req.user._id, req.body, { new: true }, (err, user) => {
+    User.findByIdAndUpdate(req.body.id, req.body, { new: true }, (err, notes) => {
       res.send("succesfull");
     });
   });
@@ -488,8 +488,7 @@ app.get('/attendancedetails/:id', function (req, res) {
         res.json({
             atd:attendance.map(atd=>{
                 return{
-                    rnumber:atd.rnumber,
-                    stdimage:atd.stdimage,  
+                    rnumber:atd.rnumber, 
                     name:atd.name,  
                     present:atd.present,  
                     absent:atd.absent  
@@ -500,6 +499,14 @@ app.get('/attendancedetails/:id', function (req, res) {
         res.send(e)
     });
 });
+
+
+app.delete('/attendancedelete/:id',function(req,res){
+    uid=req.params.id.toString();
+    Attendance.findByIdAndDelete(uid).then(function(){
+        res.send({message:"success"})
+    })
+  })
 
 
 
