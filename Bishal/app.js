@@ -25,6 +25,7 @@ const Student = require('./model/Student');
 const Notes = require('./model/Notes');
 const Attendance = require('./model/Attendance');
 const Contact = require('./model/Contact');
+const Approve = require('./model/Approve');
 
 
 
@@ -365,7 +366,7 @@ app.post('/contact', (req, res) => {
 
   app.put('/updatenote', function (req, res) {   //update note
     console.log(req.body);
-    Notes.findByIdAndUpdate(req.notes, req.body, { new: true }, (err, notes) => {
+    Notes.findByIdAndUpdate(req.body.id, req.body, { new: true }, (err, notes) => {
       res.send("Note Updated succesfully");
     });
   });
@@ -470,7 +471,8 @@ app.get('/reportdetails/:id', function (req, res) {
         res.json({
             attd:attendance.map(attd=>{
                 return{
-                    date:attd.date  
+                    date:attd.date,
+                    _id:attd._id
                 }
             })
         });
@@ -481,7 +483,7 @@ app.get('/reportdetails/:id', function (req, res) {
 
 app.get('/attendancedetails/:id', function (req, res) {
     uid=req.params.id.toString();
-    Attendance.find({date:uid}).then(function (attendance) {
+    Attendance.find({_id:uid}).then(function (attendance) {
         console.log(attendance)
         res.json({
             atd:attendance.map(atd=>{
@@ -499,6 +501,33 @@ app.get('/attendancedetails/:id', function (req, res) {
     });
 });
 
+
+
+
+
+
+app.post('/approval/:id', (req, res) => {
+    console.log(req.body);
+    var mydata = new Approve({status:"Approval Request", userid:req.user._id});
+    mydata.save().then(function (data) {
+        //alert(Success)
+        res.send(data);
+ }).catch(function (e) {
+      res.send(e);
+    
+
+    });
+});
+
+
+
+app.put('/userapprove/:id', function (req,res){
+    uid=req.params.id.toString();
+    console.log(uid);
+    Approve.findByIdAndUpdate(uid, { $set: { status:"request approved"}}, {new:true },(err,info) => {
+        res.send("fine");
+    })
+})
 
 
 

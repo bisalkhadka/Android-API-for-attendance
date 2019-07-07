@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken')
 const StudentSchema = new mongoose.Schema({
 
     stdimage: { // column name
