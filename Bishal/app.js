@@ -25,7 +25,6 @@ const Student = require('./model/Student');
 const Notes = require('./model/Notes');
 const Attendance = require('./model/Attendance');
 const Contact = require('./model/Contact');
-const Approve = require('./model/Approve');
 
 
 
@@ -391,7 +390,7 @@ app.post('/addattendance', (req, res) => {
 
 app.put('/updatestudent', function (req, res) {   //update student
     console.log(req.body);
-    Student.findByIdAndUpdate(req.student, req.body, { new: true }, (err, student) => {
+    Student.findByIdAndUpdate(req.body.id, req.body, { new: true }, (err, student) => {
       res.send("Profile Updated succesfully");
     });
   });
